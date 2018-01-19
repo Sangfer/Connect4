@@ -12,35 +12,48 @@ var tokenYellow='<img src="../img/token_yellow.png" style="width:50px; height:au
       });
     };
 
+    var checkIfGameIsNull = function() {
+        var x
+        for(var col = 1; col <8; col++){
+            console.log($('.myTable tr:nth-child(1) td:nth-child('+col+')').html());
+            if( $('.myTable tr:nth-child(1) td:nth-child('+col+')').html()==tokenWhite){
+                x=0;
+                return x;
+            } else {
+                x=1;
+            }
+        }
+        return x;
+    };
 
-  //   $('.myTable tr td').on("click",function() {
-  //         $(this).css('background-color', 'red');
-  //         $(this).text("2");
-  //   });
-  // }
 
 
 
-
-
-$('.myTable tr td').on("click",function() {
-    tour++;
-
-                var col=$(this).closest("td").index();
-                var col=col+1;
-                for(var row = 6; row >= 1; row--){
-                     if($('.myTable tr:nth-child('+ row +') td:nth-child('+ col +')').html()==tokenWhite) {
-                         if(tour%2==0){
-                             $('.myTable tr:nth-child('+ row +') td:nth-child('+ col +')').html(tokenRed);
-                             break;
-                         } else {
-                             $('.myTable tr:nth-child('+ row +') td:nth-child('+ col +')').html(tokenYellow);
-                             break;
+    $('.myTable tr td').on("click",function() {
+        tour++;
+            var col=$(this).closest("td").index();
+            var col=col+1;
+            for(var row = 6; row >= 1; row--){
+                 if($('.myTable tr:nth-child('+ row +') td:nth-child('+ col +')').html()==tokenWhite) {
+                     if(tour%2==0){
+                         $('.myTable tr:nth-child('+ row +') td:nth-child('+ col +')').html(tokenRed);
+                         var endOfTheGame= checkIfGameIsNull();
+                         if (endOfTheGame==1){
+                             alert('end');
                          }
-
+                         break;
+                     } else {
+                         $('.myTable tr:nth-child('+ row +') td:nth-child('+ col +')').html(tokenYellow);
+                         var endOfTheGame= checkIfGameIsNull();
+                         if (endOfTheGame==1){
+                             alert('end');
+                         }
+                         break;
                      }
-                }
-          });
+
+                 }
+            }
+      });
 
 
 
