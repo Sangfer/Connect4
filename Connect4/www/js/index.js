@@ -7,9 +7,12 @@ var counterRedHorizontal =0;
 var counterRedVertical = 0;
 var counterYellowHorizontal =0;
 var counterYellowVertical = 0;
+var counterDiagonalLeft = 0;
+var counterDiagonalRight = 0;
 
 var scoreYellow = 0;
 var scoreRed = 0;
+var resultDiagoL = 0;
 
 
 /***
@@ -35,13 +38,16 @@ var resetGame = function() {
     counterRedVertical=0;
     counterYellowHorizontal=0;
     counterYellowVertical=0;
+    turn=0;
+    resultDiagoL=0;
     $('.turn').html('Yellow\'s turn to play:').css('color', 'yellow');
 };
 
 /**Check if the game is over. Means multiple things as the function's name suggest:
  * - if the game is a draw
- * - if yellow wins with rows or cells
- * - if red wins with rows or cell.
+ * - if yellow wins with rows or cells, or Left Diag
+ * - if red wins with rows or cell, or Left Diag
+ *
  * Upgrade the score and reset the game.
  */
 
@@ -75,9 +81,88 @@ var checkForEndOfTheGame = function(){
         resetGame();
         scoreYellow++;
         $('.scoreYellow').html('Yellow '+scoreYellow);
+    }
 
+    if(checkIfLeftDiagonalIsWinning(1, tokenYellow, counterDiagonalLeft)==1){
+        alert("Yellow wins with diagonal");
+        resetGame();
+        scoreYellow++;
+        $('.scoreYellow').html('Yellow '+scoreYellow);
+    }
+
+    if(checkIfLeftDiagonalIsWinning(2, tokenRed, counterDiagonalLeft)==2){
+        alert("Red wins with diagonal");
+        resetGame();
+        scoreRed++;
+        $('.scoreYellow').html('Red '+scoreYellow);
     }
 };
+
+
+/**
+ * This function is checking if 4 tokens with the same colors are aligned on a left diag (bottom left to top right)
+ *
+ * @param identifierColor the function is generic, it allows to remember which color is asking for the verification
+ * @param token for changing the color of the token
+ * @param counter number for knowing if 4 tokens are aligned
+ * @returns {number} 1 if yellow wins, 2 if it's red, 0 if nothing
+ */
+var checkIfLeftDiagonalIsWinning = function(identifierColor, token, counter) {
+        console.log(token+ ' '+ counter);
+        for (var row = 6; row >= 1; row--) {
+            for (var col = 1; col < 5; col++) {
+
+                /**
+                 * The function below is called 4 times, cause we need to have 4 tokens aligned.
+                 * */
+
+                for (i = 0; i < 3; ++i) {
+                    checkCellDependingOnRowColumn(row, col, token, counter);
+                }
+                if (resultDiagoL==1) {
+                    if(identifierColor==1)
+                    return 1;
+                    else return 2;
+                }
+            }
+        }
+        return 0;
+    };
+
+
+/**
+ *This function is recursive. If it find a token from the good color, then it calls itself on the token
+ * situated 1 row above and one column on the right. Everytime it match a token from the same color, the counter is incremented.
+ * Else, it goes back to 0.
+ *
+ *
+ * @param row the row number to check
+ * @param column the column number to check
+ * @param token the identifier for getting the color
+ * @param counter the counter for knowing if 4 tokens are aligned
+ * @returns {number}
+ */
+    var checkCellDependingOnRowColumn = function(row, column, token, counter){
+        tmprow=row-1;
+        tmpCol=column+1;
+        if ($('.myTable tr:nth-child('+row+') td:nth-child('+column+')').html() == token) {
+            counter++;
+            if (counter == 4) {
+                resultDiagoL=1;
+                return 0;
+            }
+            checkCellDependingOnRowColumn(tmprow, tmpCol, token, counter);
+        }
+        else {
+            counter=0;
+            return -1;
+        }
+    };
+
+
+
+
+
 
 /**
  * Check if the game is a draw, means if the first row does not include blank tokens
@@ -179,6 +264,7 @@ var checkIfRowIsWinning = function(){
     }
     return 0;
 };
+
 
 
 
