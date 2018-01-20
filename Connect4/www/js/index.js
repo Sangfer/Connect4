@@ -93,7 +93,7 @@ var checkForEndOfTheGame = function(){
         alert("Red wins with diagonal");
         resetGame();
         scoreRed++;
-        $('.scoreYellow').html('Red '+scoreRed);
+        $('.scoreRed').html('Red '+scoreRed);
     }
 
 
@@ -136,7 +136,7 @@ var checkIfDiagonalIsWinning = function(identifierColor, token, counter) {
 
 
     for (var row = 6; row >= 1; row--) {
-        for (var col = 8; col > 4; col--) {
+        for (var col = 7; col > 3; col--) {
             /**
              * The function below is called 4 times, cause we need to have 4 tokens aligned.
              * */
