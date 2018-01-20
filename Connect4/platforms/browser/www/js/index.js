@@ -89,12 +89,12 @@ var checkForEndOfTheGame = function(){
 
     }
 
-    // if(checkIfDiagonalIsWinning(1, tokenRed, counterDiag)==2){
-    //     alert("Red wins with diagonal");
-    //     resetGame();
-    //     scoreRed++;
-    //     $('.scoreYellow').html('Red '+scoreRed);
-    // }
+    if(checkIfDiagonalIsWinning(2, tokenRed, counterDiag)==2){
+        alert("Red wins with diagonal");
+        resetGame();
+        scoreRed++;
+        $('.scoreYellow').html('Red '+scoreRed);
+    }
 
 
     if(checkIfDiagonalIsWinning(1, tokenYellow, counterDiag)==1){
@@ -107,7 +107,7 @@ var checkForEndOfTheGame = function(){
 
 
 /**
- * This function is checking if 4 tokens with the same colors are aligned on a left diag (bottom left to top right)
+ * This function is checking if 4 tokens with the same colors are aligned on a diag
  *
  * @param identifierColor the function is generic, it allows to remember which color is asking for the verification
  * @param token for changing the color of the token
@@ -122,8 +122,27 @@ var checkIfDiagonalIsWinning = function(identifierColor, token, counter) {
             /**
              * The function below is called 4 times, cause we need to have 4 tokens aligned.
              * */
+            //This for has a parameter 'Left' meaning diagonal from bottom left to top right
             for (i = 0; i < 3; ++i) {
-                checkCellDependingOnRowColumn(row, col, token, counter);
+                checkCellDependingOnRowColumn(row, col, token, counter, 'Left');
+            }
+            if (resultDiagoL==1) {
+                if(identifierColor==1)
+                    return 1;
+                else return 2;
+            }
+        }
+    }
+
+
+    for (var row = 6; row >= 1; row--) {
+        for (var col = 8; col > 4; col--) {
+            /**
+             * The function below is called 4 times, cause we need to have 4 tokens aligned.
+             * */
+            //This for has a parameter 'Right' meaning diagonal from bottom right  to top left.
+            for (i = 0; i < 3; ++i) {
+                checkCellDependingOnRowColumn(row, col, token, counter, 'Right');
             }
             if (resultDiagoL==1) {
                 if(identifierColor==1)
@@ -138,7 +157,7 @@ var checkIfDiagonalIsWinning = function(identifierColor, token, counter) {
 
 /**
  *This function is recursive. If it find a token from the good color, then it calls itself on the token
- * situated 1 row above and one column on the right. Everytime it match a token from the same color, the counter is incremented.
+ * situated 1 row above and column left or right depending of the orientation. Everytime it match a token from the same color, the counter is incremented.
  * Else, it goes back to 0.
  *
  *
@@ -148,16 +167,18 @@ var checkIfDiagonalIsWinning = function(identifierColor, token, counter) {
  * @param counter the counter for knowing if 4 tokens are aligned
  * @returns {number}
  */
-var checkCellDependingOnRowColumn = function(row, column, token, counter){
+var checkCellDependingOnRowColumn = function(row, column, token, counter, orientation){
     tmprow=row-1;
-    tmpCol=column+1;
+    if (orientation == 'Left') tmpCol = column + 1;
+    if (orientation == 'Right')tmpCol=  column - 1;
+
     if ($('.myTable tr:nth-child('+row+') td:nth-child('+column+')').html() == token) {
         counter++;
         if (counter == 4) {
             resultDiagoL=1;
             return 0;
         }
-        checkCellDependingOnRowColumn(tmprow, tmpCol, token, counter);
+        checkCellDependingOnRowColumn(tmprow, tmpCol, token, counter, orientation);
     }
     else {
         counter=0;
