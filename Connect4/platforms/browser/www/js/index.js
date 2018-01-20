@@ -7,12 +7,12 @@ var counterRedHorizontal =0;
 var counterRedVertical = 0;
 var counterYellowHorizontal =0;
 var counterYellowVertical = 0;
-var counterDiagonalLeft = 0;
-var counterDiagonalRight = 0;
-
 var scoreYellow = 0;
 var scoreRed = 0;
-var resultDiagoL = 0;
+var counterDiag=0;
+var winnerRow=0;
+var winnerCol=0;
+var resultDiagoL=0;
 
 
 /***
@@ -34,24 +34,28 @@ var resetGame = function() {
             $('.myTable tr:nth-child(' + row + ') td:nth-child(' + col + ')').html(tokenWhite);
         }
     }
-    counterRedHorizontal=0;
-    counterRedVertical=0;
-    counterYellowHorizontal=0;
-    counterYellowVertical=0;
-    turn=0;
+    counterRedHorizontal =0;
+    counterRedVertical = 0;
+    counterYellowHorizontal =0;
+    counterYellowVertical = 0;
+    counterDiag=0;
+    winnerRow=0;
+    winnerCol=0;
     resultDiagoL=0;
+    turn=0;
+
     $('.turn').html('Yellow\'s turn to play:').css('color', 'yellow');
 };
 
 /**Check if the game is over. Means multiple things as the function's name suggest:
  * - if the game is a draw
- * - if yellow wins with rows or cells, or Left Diag
- * - if red wins with rows or cell, or Left Diag
- *
+ * - if yellow wins with rows or cells
+ * - if red wins with rows or cell.
  * Upgrade the score and reset the game.
  */
 
 var checkForEndOfTheGame = function(){
+
     if (checkIfGameIsNull()==-1){
         alert('Draw Match');
         resetGame();
@@ -76,25 +80,28 @@ var checkForEndOfTheGame = function(){
         $('.scoreRed').html('Red '+scoreRed);
 
     }
+
     if(checkIfColumnIsWinning()==1){
         alert("Yellow wins with columns");
         resetGame();
         scoreYellow++;
         $('.scoreYellow').html('Yellow '+scoreYellow);
+
     }
 
-    if(checkIfLeftDiagonalIsWinning(1, tokenYellow, counterDiagonalLeft)==1){
+    // if(checkIfDiagonalIsWinning(1, tokenRed, counterDiag)==2){
+    //     alert("Red wins with diagonal");
+    //     resetGame();
+    //     scoreRed++;
+    //     $('.scoreYellow').html('Red '+scoreRed);
+    // }
+
+
+    if(checkIfDiagonalIsWinning(1, tokenYellow, counterDiag)==1){
         alert("Yellow wins with diagonal");
         resetGame();
         scoreYellow++;
         $('.scoreYellow').html('Yellow '+scoreYellow);
-    }
-
-    if(checkIfLeftDiagonalIsWinning(2, tokenRed, counterDiagonalLeft)==2){
-        alert("Red wins with diagonal");
-        resetGame();
-        scoreRed++;
-        $('.scoreYellow').html('Red '+scoreYellow);
     }
 };
 
@@ -107,27 +114,26 @@ var checkForEndOfTheGame = function(){
  * @param counter number for knowing if 4 tokens are aligned
  * @returns {number} 1 if yellow wins, 2 if it's red, 0 if nothing
  */
-var checkIfLeftDiagonalIsWinning = function(identifierColor, token, counter) {
-        console.log(token+ ' '+ counter);
-        for (var row = 6; row >= 1; row--) {
-            for (var col = 1; col < 5; col++) {
+var checkIfDiagonalIsWinning = function(identifierColor, token, counter) {
+    console.log(token+ ' '+ counter);
+    for (var row = 6; row >= 1; row--) {
+        for (var col = 1; col < 5; col++) {
 
-                /**
-                 * The function below is called 4 times, cause we need to have 4 tokens aligned.
-                 * */
-
-                for (i = 0; i < 3; ++i) {
-                    checkCellDependingOnRowColumn(row, col, token, counter);
-                }
-                if (resultDiagoL==1) {
-                    if(identifierColor==1)
+            /**
+             * The function below is called 4 times, cause we need to have 4 tokens aligned.
+             * */
+            for (i = 0; i < 3; ++i) {
+                checkCellDependingOnRowColumn(row, col, token, counter);
+            }
+            if (resultDiagoL==1) {
+                if(identifierColor==1)
                     return 1;
-                    else return 2;
-                }
+                else return 2;
             }
         }
-        return 0;
-    };
+    }
+    return 0;
+};
 
 
 /**
@@ -142,23 +148,22 @@ var checkIfLeftDiagonalIsWinning = function(identifierColor, token, counter) {
  * @param counter the counter for knowing if 4 tokens are aligned
  * @returns {number}
  */
-    var checkCellDependingOnRowColumn = function(row, column, token, counter){
-        tmprow=row-1;
-        tmpCol=column+1;
-        if ($('.myTable tr:nth-child('+row+') td:nth-child('+column+')').html() == token) {
-            counter++;
-            if (counter == 4) {
-                resultDiagoL=1;
-                return 0;
-            }
-            checkCellDependingOnRowColumn(tmprow, tmpCol, token, counter);
+var checkCellDependingOnRowColumn = function(row, column, token, counter){
+    tmprow=row-1;
+    tmpCol=column+1;
+    if ($('.myTable tr:nth-child('+row+') td:nth-child('+column+')').html() == token) {
+        counter++;
+        if (counter == 4) {
+            resultDiagoL=1;
+            return 0;
         }
-        else {
-            counter=0;
-            return -1;
-        }
-    };
-
+        checkCellDependingOnRowColumn(tmprow, tmpCol, token, counter);
+    }
+    else {
+        counter=0;
+        return -1;
+    }
+};
 
 
 
@@ -194,77 +199,90 @@ var checkIfColumnIsWinning = function(){
     for(var col = 1; col <8; col++){
         for(var row =6; row >= 1; row--){
             if($('.myTable tr:nth-child('+ row +') td:nth-child('+ col +')').html()==tokenWhite){
+                //If there's a white token, then means that the previous combo is broken
                 counterRedVertical=0;
                 counterYellowVertical=0;
-                //If there's a white token, then means that the previous combo is broken
+
             }
             if($('.myTable tr:nth-child('+ row +') td:nth-child('+ col +')').html()==tokenRed){
                 //If there's a red, then red put a token out of 4, so we increment the counter of red
                 //and reset yellow's one to 0.
                 counterRedVertical++;
                 counterYellowVertical=0;
+
             }
             if($('.myTable tr:nth-child('+ row +') td:nth-child('+ col +')').html()==tokenYellow){
                 //If there's a yellow, then yellow put a token out of 4, so we increment the counter of yellow
                 //and reset red's one to 0.
                 counterRedVertical=0;
                 counterYellowVertical++;
+                // console.log("red: "+counterRedVertical);
+                // console.log("yellow: "+counterYellowVertical);
             }
             if(counterRedVertical==4){
+                winnerCol=2;
                 //means win of Red by columns
-                return 2;
             }
             if(counterYellowVertical==4){
+                winnerCol=1;
                 //means win of Yellow by columns
-                return 1;
             }
         }
         //Reset the counter for Yellow and Red Columns in order not to outreach on others columns.
         counterYellowVertical=0;
         counterRedVertical=0;
     }
-    return 0;
+    return winnerCol;
 };
-
 
 
 var checkIfRowIsWinning = function(){
 
     for(var row =6; row >= 1; row--){
+        console.log('Row: '+row);
         for(var col = 1; col <8; col++){
             if($('.myTable tr:nth-child('+ row +') td:nth-child('+ col +')').html()==tokenWhite){
                 //If there's a white token, then means that the previous combo is broken
                 counterRedHorizontal=0;
                 counterYellowHorizontal=0;
+                console.log("BLANC"+col);
+                console.log("red: "+counterRedHorizontal);
+                console.log("yellow: "+counterYellowHorizontal);
             }
             if($('.myTable tr:nth-child('+ row +') td:nth-child('+ col +')').html()==tokenRed){
                 //If there's a red, then red put a token out of 4, so we increment the counter of red
                 //and reset yellow's one to 0.
                 counterRedHorizontal++;
                 counterYellowHorizontal=0;
+                console.log("RED"+col);
+                console.log("red: "+counterRedHorizontal);
+                console.log("yellow: "+counterYellowHorizontal);
             }
             if($('.myTable tr:nth-child('+ row +') td:nth-child('+ col +')').html()==tokenYellow){
                 //If there's a yellow, then yellow put a token out of 4, so we increment the counter of yellow
                 //and reset red's one to 0.
                 counterRedHorizontal=0;
                 counterYellowHorizontal++;
+                console.log("YELLOW"+col);
+                console.log("red: "+counterRedHorizontal);
+                console.log("yellow: "+counterYellowHorizontal);
             }
             if(counterRedHorizontal==4){
-                //means win of Red by rows
-                return 2;
+                winnerRow=2;
+                break;
+                //means win of Red by columns
             }
             if(counterYellowHorizontal==4){
-                //means win of Yellow by rows
-                return 1;
+                winnerRow=1;
+                break;
+                //means win of Yellow by columns
             }
-        }
-        //Reset the counter for Yellow and Red Columns in order not to outreach on others columns.
+        }//Reset the counter for Yellow and Red Columns in order not to outreach on others columns.
         counterYellowHorizontal=0;
-        counterRedVertical=0;
+        counterRedHorizontal=0;
     }
-    return 0;
+    return winnerRow;
 };
-
 
 
 
