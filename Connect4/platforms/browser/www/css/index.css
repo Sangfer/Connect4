@@ -1,9 +1,5 @@
 
 
-* {
-    -webkit-tap-highlight-color: rgba(0,0,0,0); /* make transparent link selection, adjust last value opacity 0 to 1.0 */
-}
-
 .class-myfont {
     font-family: 'Open Sans', sans-serif;
 }
@@ -22,13 +18,24 @@ body{
 
 }
 
-/* Landscape layout (with min-width) */
-@media screen and (min-aspect-ratio: 1/1) and (min-width:400px) {
-    .app {
-
+@media only screen and (max-width : 400px) {
+    .myCell{
+        width:40px;
+        height:40px;
     }
 }
 
+
+@media only screen and (min-device-width : 768px) and (max-device-width : 1024px) and (orientation : landscape) {
+    .myCell{
+        width:80px;
+        height:auto;
+    }
+
+    .class-myfont{
+        font-size: 20px;
+    }
+}
 .drawGrid {
     margin: 0 auto;
 }
@@ -62,9 +69,6 @@ h1 {
     text-align:center;
 }
 
-.myTable{
-}
-
 .event {
     border-radius:4px;
     -webkit-border-radius:4px;
@@ -82,22 +86,5 @@ h1 {
 .event.received {
     background-color:#4B946A;
     display:none;
-}
-
-@keyframes fade {
-    from { opacity: 1.0; }
-    50% { opacity: 0.4; }
-    to { opacity: 1.0; }
-}
-
-@-webkit-keyframes fade {
-    from { opacity: 1.0; }
-    50% { opacity: 0.4; }
-    to { opacity: 1.0; }
-}
-
-.blink {
-    animation:fade 3000ms infinite;
-    -webkit-animation:fade 3000ms infinite;
 }
 

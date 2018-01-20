@@ -93,7 +93,7 @@ var checkForEndOfTheGame = function(){
         alert("Red wins with diagonal");
         resetGame();
         scoreRed++;
-        $('.scoreYellow').html('Red '+scoreRed);
+        $('.scoreRed').html('Red '+scoreRed);
     }
 
 
@@ -115,7 +115,6 @@ var checkForEndOfTheGame = function(){
  * @returns {number} 1 if yellow wins, 2 if it's red, 0 if nothing
  */
 var checkIfDiagonalIsWinning = function(identifierColor, token, counter) {
-    console.log(token+ ' '+ counter);
     for (var row = 6; row >= 1; row--) {
         for (var col = 1; col < 5; col++) {
 
@@ -136,7 +135,7 @@ var checkIfDiagonalIsWinning = function(identifierColor, token, counter) {
 
 
     for (var row = 6; row >= 1; row--) {
-        for (var col = 8; col > 4; col--) {
+        for (var col = 7; col > 3; col--) {
             /**
              * The function below is called 4 times, cause we need to have 4 tokens aligned.
              * */
@@ -237,8 +236,6 @@ var checkIfColumnIsWinning = function(){
                 //and reset red's one to 0.
                 counterRedVertical=0;
                 counterYellowVertical++;
-                // console.log("red: "+counterRedVertical);
-                // console.log("yellow: "+counterYellowVertical);
             }
             if(counterRedVertical==4){
                 winnerCol=2;
@@ -260,33 +257,23 @@ var checkIfColumnIsWinning = function(){
 var checkIfRowIsWinning = function(){
 
     for(var row =6; row >= 1; row--){
-        console.log('Row: '+row);
         for(var col = 1; col <8; col++){
             if($('.myTable tr:nth-child('+ row +') td:nth-child('+ col +')').html()==tokenWhite){
                 //If there's a white token, then means that the previous combo is broken
                 counterRedHorizontal=0;
                 counterYellowHorizontal=0;
-                console.log("BLANC"+col);
-                console.log("red: "+counterRedHorizontal);
-                console.log("yellow: "+counterYellowHorizontal);
             }
             if($('.myTable tr:nth-child('+ row +') td:nth-child('+ col +')').html()==tokenRed){
                 //If there's a red, then red put a token out of 4, so we increment the counter of red
                 //and reset yellow's one to 0.
                 counterRedHorizontal++;
                 counterYellowHorizontal=0;
-                console.log("RED"+col);
-                console.log("red: "+counterRedHorizontal);
-                console.log("yellow: "+counterYellowHorizontal);
             }
             if($('.myTable tr:nth-child('+ row +') td:nth-child('+ col +')').html()==tokenYellow){
                 //If there's a yellow, then yellow put a token out of 4, so we increment the counter of yellow
                 //and reset red's one to 0.
                 counterRedHorizontal=0;
                 counterYellowHorizontal++;
-                console.log("YELLOW"+col);
-                console.log("red: "+counterRedHorizontal);
-                console.log("yellow: "+counterYellowHorizontal);
             }
             if(counterRedHorizontal==4){
                 winnerRow=2;
